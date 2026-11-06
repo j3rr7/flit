@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>flit</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+    background: #0e1116; color: #e6edf3;
+    display: flex; flex-direction: column;
+  }
+  header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 16px; border-bottom: 1px solid #222831;
+    font-size: 14px;
+  }
+  #room-label { font-weight: 600; }
+  #status { opacity: .7; font-size: 12px; margin-left: auto; }
+  main { flex: 1; display: flex; min-height: 0; }
+  .editor-wrap { flex: 1; position: relative; min-height: 0; overflow: hidden; }
+  #editor {
+    display: block;
+    width: 100%; height: 100%; resize: none; border: 0; outline: 0;
+    padding: 16px; font: 14px/1.5 ui-monospace, Menlo, monospace;
+    background: #0b0e13; color: inherit; box-sizing: border-box;
+  }
+
+  #cursor-layer {
+    position: absolute; inset: 0;
+    pointer-events: none; overflow: hidden;
+  }
+
+  #mirror {
+    position: absolute; top: 0; left: 0;
+    visibility: hidden; pointer-events: none; z-index: -1;
+    padding: 16px; box-sizing: content-box;
+    font: 14px/1.5 ui-monospace, Menlo, monospace;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    tab-size: 8;
+  }
+  .cm {
+    display: inline-block;
+    width: 0;
+    height: 1.5em;
+    vertical-align: top;
+  }
+
+  .rcursor { position: absolute; pointer-events: none; --c: #888; }
+  .rcursor-bar {
+    position: absolute;
+    width: 2px; height: 1.5em;
+    background: var(--c);
+    border-radius: 1px;
+  }
+  .rcursor-label {
+    position: absolute;
+    top: -1.35em; left: 0;
+    font-size: 10px; line-height: 1; font-weight: 600;
+    padding: 2px 4px; border-radius: 3px;
+    background: var(--c); color: #000;
+    white-space: nowrap;
+    opacity: .9;
+  }
+  aside {
+    width: 180px; border-left: 1px solid #222831;
+    padding: 12px; overflow-y: auto; font-size: 13px;
+  }
+  aside h3 { margin: 0 0 8px; font-size: 11px; text-transform: uppercase;
+    letter-spacing: .08em; opacity: .6; font-weight: 600; }
+  .peer { display: flex; align-items: center; gap: 8px;
+    padding: 4px 0; }
+  .peer .dot { width: 8px; height: 8px; border-radius: 50%; flex: 0 0 8px; }
+  .peer .pos { margin-left: auto; opacity: .5; font-size: 11px; }
+  .peer.self { font-weight: 600; }
+  header button {
+    background: none; border: 1px solid #222831; color: inherit;
+    padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px;
+    }
+    header button:hover { background: #1a1f28; }
+    header button:disabled { opacity: .45; cursor: default; }
+    header button:disabled:hover { background: none; }
+
+    main.no-peers aside { display: none; }
+  #lock-btn:disabled { opacity: .45; cursor: default; }
+  #lock-btn:disabled:hover { background: none; }
+</style>
+</head>
+<body>
+<header>
+  <span id="room-label">…</span>
+  <button id="share-btn" type="button" title="Copy room link">Share</button>
+  <span id="status">connecting…</span>
+  <button id="peers-toggle" type="button" title="Hide peers">Peers</button>
+  <button id="lock-btn" title="Create a password-protected room" type="button">Set Password</button>
+</header>
+<main>
+  <div class="editor-wrap">
+    <textarea id="editor" placeholder="Start typing…" spellcheck="false"></textarea>
+    <div id="cursor-layer" aria-hidden="true"></div>
+    <div id="mirror" aria-hidden="true"></div>
+  </div>
+  <aside>
+    <h3>Peers</h3>
+    <div id="peers"></div>
+  </aside>
+</main>
+<script src="/static/app.js"></script>
+</body>
+</html>
